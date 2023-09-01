@@ -38,8 +38,8 @@ function test_init(){
     <form method="post">
     <input type="checkbox" id="approve" name="approve" value="approve">
     <label for="approve"> Aprrove Users</label><br>
-    <input type="checkbox" id="notapprove" name="notapprove" value="notapprove">
-    <label for="notapprove"> Not Approve Users</label><br>
+    <input type="checkbox" id="alluser" name="alluser" value="alluser">
+    <label for="notapprove">All Users</label><br>
     <button type="submit" name="export_data">Download</button>
   </form>
 
@@ -151,7 +151,7 @@ function save_display_value_javascript() {
 
 // Handle the export data functionality
 function export_user_data() {
-    if (isset($_POST['export_data'])) {
+    if (isset($_POST['export_data']) && isset($_POST['alluser'])) {
         global $wpdb;
         
         $users = get_users();
@@ -167,15 +167,38 @@ function export_user_data() {
             $csv_output .= "     {$usermeta['phone'][0]}     ||     {$usermeta['address'][0]}\n";
            
         }
-        
         // Generate CSV file
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="user_data.csv"');
         echo $csv_output;
         exit();
     }
-}
+else if(isset($_POST['approve'])){
 
+    global $wpdb;
+        
+    $users = get_users();
+    $csv_output = "User ID     ||     Username      ||     Email                ||     Number          ||     Address\n"; // CSV header
+
+    foreach ($users as $user) {
+        $usermeta = get_user_meta($user->ID);
+        $data = $usermeta['display_as'][0];
+        if( $data == 'approve'){
+
+            $csv_output .= "{$user->ID}           ||     {$user->user_login}        ||     {$user->user_email}     ||";
+            $csv_output .= "     {$usermeta['phone'][0]}     ||     {$usermeta['address'][0]}\n";
+        }
+
+     }
+       // Generate CSV file
+       header('Content-Type: text/csv');
+       header('Content-Disposition: attachment; filename="user_data.csv"');
+       echo $csv_output;
+       exit();
+
+
+}
+}
 
 add_action('init', 'export_user_data');
 
