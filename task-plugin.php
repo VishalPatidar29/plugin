@@ -36,12 +36,23 @@ function test_plugin_setup_menu(){
 function test_init(){
 ?>
     <form method="post">
-    <input type="checkbox" id="approve" name="approve" value="approve">
+
+    <input type="checkbox" id="approve" name="approve" value="approve" class="checkoption">
     <label for="approve"> Aprrove Users</label><br>
-    <input type="checkbox" id="alluser" name="alluser" value="alluser">
+    <input type="checkbox" id="alluser" name="alluser" value="alluser" class="checkoption">
     <label for="notapprove">All Users</label><br>
     <button type="submit" name="export_data">Download</button>
   </form>
+
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+
+         jQuery('.checkoption').click(function() {
+              jQuery('.checkoption').not(this).prop('checked', false);
+         });
+
+    });
+    </script>
 
 
 <?php
